@@ -1,0 +1,13 @@
+master:
+  build: ./
+  dockerfile: Dockerfile-master
+  ports:
+        - "5432:5432"
+
+slave:
+  build: ./
+  dockerfile: Dockerfile-slave
+  ports:
+        - "5431:5432"
+  links:
+    - master:master
