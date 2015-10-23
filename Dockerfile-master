@@ -24,10 +24,12 @@ RUN /bin/echo -e "                                           \
 #
 # Create the test suite user and database
 #
+COPY ip.sh /ip.sh
+RUN  chmod +x /ip.sh
 USER postgres
 RUN /etc/init.d/postgresql start                                              \
     && psql -c "CREATE USER testsuite WITH UNENCRYPTED PASSWORD 'testsuite';" \
     && psql -c "CREATE DATABASE testsuite WITH OWNER testsuite;"
 
 EXPOSE 5432
-CMD /usr/lib/postgresql/9.1/bin/postgres -D /var/lib/postgresql/9.1/main -c config_file=/etc/postgresql/9.1/main/postgresql.conf
+CMD /usr/lib/postgresql/9.1/bin/postgres -D /var/lib/postgresql/9.1/main -c config_file=/etc/postgresql/9.1/main/postgresql.conf && . /ip.sh

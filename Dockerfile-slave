@@ -3,7 +3,7 @@ FROM ubuntu:12.04
 #
 # Install postgresql
 #
-RUN apt-get update && apt-get install -y iputils-ping postgresql-9.1 nano
+RUN apt-get update && apt-get install -y iputils-ping postgresql-9.1 nano net-tools
 
 #
 # Setup configuration
@@ -16,12 +16,7 @@ RUN /bin/echo -e "                                               \
         listen_addresses = '*'                               \n  \
         port=5432                                            \n  \
         hot_standby = on                                     \n  \
-    " >> /etc/postgresql/9.1/main/postgresql.conf                \
-    && /bin/echo -e "                                            \
-        standby_mode='on'                                    \n  \
-        primary_conninfo = 'host=pg1_master port=5432'        \n  \
-        trigger_file = '/tmp/trigger_file0'                  \n  \
-    " > /var/lib/postgresql/9.1/main/recovery.conf
+    " >> /etc/postgresql/9.1/main/postgresql.conf                
 
 #
 # Add startup script. This will perform initial replication and start
@@ -29,6 +24,8 @@ RUN /bin/echo -e "                                               \
 # at pg_master
 #
 #
+RUN chmod -R 777 /tmp
+COPY recovery.conf /var/lib/postgresql/9.1/main/recovery.conf
 COPY run.sh /var/lib/postgresql/9.1/run.sh
 
 USER postgres
