@@ -2,13 +2,14 @@
 #
 # Snapshot the initial database
 #
-/usr/bin/pg_basebackup -h pg1_master -p 5432 -D /var/lib/postgresql/9.1/main2 -U postgres -v -P -x
-cp /var/lib/postgresql/9.1/main/recovery.conf /var/lib/postgresql/9.1/main2
-cp /var/lib/postgresql/9.1/main/server.* /var/lib/postgresql/9.1/main2
+IP=`cat /tmp/ip.txt`
+sed -i 's/$HOST/'"$IP"'/' /var/lib/postgresql/9.1/main/recovery.conf 
+mkdir -p /var/lib/postgresql/9.1/main2
+/usr/bin/pg_basebackup -h $IP -p 5432 -D /var/lib/postgresql/9.1/main2 -U postgres -v -P -x
+cp -rf /var/lib/postgresql/9.1/main/recovery.conf /var/lib/postgresql/9.1/main2
+cp -rf /var/lib/postgresql/9.1/main/server.* /var/lib/postgresql/9.1/main2
 rm -Rf /var/lib/postgresql/9.1/main
 mv /var/lib/postgresql/9.1/main2 /var/lib/postgresql/9.1/main
-chown -R postgres:postgres /var/lib/postgresql/
-
 #
 # Start the postgresql server
 #
